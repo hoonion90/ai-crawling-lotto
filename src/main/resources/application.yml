@@ -1,0 +1,10 @@
+server:
+  port: 8070
+
+spring:
+  application:
+    name: ai-crawling-lotto  # 애플리케이션 이름 설정
+
+logging:
+  level:
+    '[org.springframework.web]': debug
