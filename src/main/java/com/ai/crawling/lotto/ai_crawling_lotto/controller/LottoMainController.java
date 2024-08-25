@@ -1,28 +1,25 @@
 package com.ai.crawling.lotto.ai_crawling_lotto.controller;
 
-import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.ai.crawling.lotto.ai_crawling_lotto.service.LastRoundCheckService;
-import com.ai.crawling.lotto.ai_crawling_lotto.service.LottoSpotCrawlerService;
+import com.ai.crawling.lotto.ai_crawling_lotto.service.LottoStoreService;
 
-@RestController
+import dto.StoreInfoCount;
+
+@Controller
 public class LottoMainController {
     @Autowired
-    private LastRoundCheckService lastRoundCheckService;
+    private LottoStoreService lottoStoreService;
 
-    @Autowired
-    private LottoSpotCrawlerService lottoSpotCrawlerService;
-
-    @GetMapping("/admin/crawl-lotto-spot")
-    public String crawlLotto() throws IOException {
-        int latestDrawNo = lastRoundCheckService.getLastestRoundNo();
-        int startDrawNo = 262; // 시작 회차
-
-        lottoSpotCrawlerService.crawlAndSave(startDrawNo, latestDrawNo);
-        return "lastDrawNo: " + Integer.toString(latestDrawNo) + ", 장소 크롤링 성공적..!";
+    @GetMapping("/top-stores")
+    public String getTopStores(Model model) {
+        List<StoreInfoCount> topStores = lottoStoreService.getTopStores();
+        model.addAttribute("topStores", topStores);
+        return "top-stores";
     }
 }
