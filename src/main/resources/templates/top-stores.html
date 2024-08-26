@@ -1,84 +1,139 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>로또 1등 당첨점</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-            padding: 20px;
+        body { 
+            padding-top: 20px; 
+            font-size: 0.9rem;
         }
+        .table-hover tbody tr:hover { background-color: #e6fbff; }
         h1 {
-            color: #2c3e50;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 700;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .table th {
+            font-size: 0.85rem;
+            white-space: nowrap;
         }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
+        thead th {
+            position: sticky;
+            top: 0;
+            background-color: #f8f9fa;
+            z-index: 1;
         }
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        tr:hover {
-            background-color: #fff3e0;
-        }
-        a {
-            color: #1a73e8;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
+
+        /* 반응형 글자 변경
+        @media (max-width: 767.98px) {
+            .table th:nth-child(4)::before {
+                content: '당첨'; 
+            }
+            .table th:nth-child(4) {
+                visibility: hidden; 
+            }
+            .table th:nth-child(4)::before {
+                visibility: visible; 
+                visibility: visible;
+            }
+        } */
     </style>
 </head>
 <body>
-    <h1>로또 1등 당첨점</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>순위</th>
-                <th>상호명</th>
-                <th>장소</th>
-                <th>당첨 횟수</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="store, iterStat : ${topStores}">
-                <td th:text="${iterStat.count}"></td>
-                <td>
-                    <a th:href="${store.storeInfo.storeName == '인터넷 복권판매사이트' ? 'https://dhlottery.co.kr' : 'https://map.naver.com/p/search/' + store.storeInfo.location}"
-                       th:text="${store.storeInfo.storeName}"
-                       target="_blank"></a>
-                </td>
-                <td th:text="${store.storeInfo.location}"></td>
-                <td th:text="${store.count}"></td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container">
+        <h1 class="mb-4">
+            <i class="fas fa-store me-3"></i>로또 1등 당첨점
+        </h1>
+        
+        <div class="row mb-4">
+            <div class="col-md-8 ms-auto">
+                <form id="searchForm" class="row g-1">
+                    <div class="col-md-3">
+                        <select id="searchType" class="form-select form-select-sm">
+                            <option value="location" selected>지역(장소)</option>
+                            <option value="storeName">상호명</option>
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" id="searchKeyword" class="form-control form-control-sm" placeholder="검색어를 입력하세요">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary btn-sm w-100">검색</button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" id="resetButton" class="btn btn-secondary btn-sm w-100">초기화</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>순위</th>
+                    <th>상호명</th>
+                    <th>장소</th>
+                    <th>당첨</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="store, iterStat : ${topStores}">
+                    <td th:text="${iterStat.count}"></td>
+                    <td>
+                        <a class="fw-bolder" th:href="${store.storeInfo.storeName == '인터넷 복권판매사이트' ? 'https://dhlottery.co.kr' : 'https://map.naver.com/p/search/' + store.storeInfo.location}"
+                           th:text="${store.storeInfo.storeName}"
+                           target="_blank"></a>
+                    </td>
+                    <td th:text="${store.storeInfo.location}"></td>
+                    <td th:text="${store.count}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const rows = document.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                row.addEventListener('mouseover', function() {
-                    this.style.backgroundColor = '#fff3e0';
+            const searchForm = document.getElementById('searchForm');
+            const searchType = document.getElementById('searchType');
+            const searchKeyword = document.getElementById('searchKeyword');
+            const resetButton = document.getElementById('resetButton');
+
+            function filterRows() {
+                const type = searchType.value;
+                const keyword = searchKeyword.value.toLowerCase();
+
+                const rows = document.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const storeNameCell = row.cells[1];
+                    const locationCell = row.cells[2];
+                    const storeName = storeNameCell.textContent.toLowerCase();
+                    const location = locationCell.textContent.toLowerCase();
+
+                    if ((type === 'storeName' && storeName.includes(keyword)) ||
+                        (type === 'location' && location.includes(keyword)) ||
+                        keyword === '') {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
                 });
-                row.addEventListener('mouseout', function() {
-                    this.style.backgroundColor = '';
-                });
+            }
+
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                filterRows();
+            });
+
+            resetButton.addEventListener('click', function() {
+                searchType.value = 'location';
+                searchKeyword.value = '';
+                filterRows();
             });
         });
     </script>
 </body>
 </html>
-
