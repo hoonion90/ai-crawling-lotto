@@ -16,6 +16,11 @@ public class LottoMainController {
     @Autowired
     private LottoStoreService lottoStoreService;
 
+    @GetMapping("/")
+    public String home(Model model) {
+        return "redirect:/top-stores";
+    }
+
     @GetMapping("/top-stores")
     public String getTopStores(Model model) {
         List<StoreInfoCount> topStores = lottoStoreService.getTopStores();
