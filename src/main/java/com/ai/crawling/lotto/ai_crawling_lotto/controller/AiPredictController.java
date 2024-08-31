@@ -48,8 +48,6 @@ public class AiPredictController {
 
         // NumberSequence 객체에서 숫자 리스트를 가져옴
         List<Integer> numbers = numberSequence.getNumbers();
-
-        // 숫자 리스트가 제대로 읽혔는지 확인 (예: [1, 2, 3, 4, 5])
         System.out.println("Received numbers: " + numbers);
 
         // 프롬프트 생성 및 예측 호출
@@ -65,6 +63,35 @@ public class AiPredictController {
         return "prediction";
     }
 
+    // private String callGoogleGemini(String prompt) {
+    //     try (PredictionServiceClient predictionServiceClient = PredictionServiceClient.create()) {
+    //         // Google Gemini API 모델 경로
+    //         String modelName = String.format("projects/%s/locations/%s/models/%s", projectId, location, modelId);
+
+    //         // 요청 페이로드 생성
+    //         PredictRequest predictRequest = PredictRequest.newBuilder()
+    //             .setEndpoint(modelName)
+    //             .setPayload(PredictRequest.Payload.newBuilder()
+    //                 .addInputs(Value.newBuilder().setStringValue(prompt).build())
+    //                 .build())
+    //             .build();
+
+    //         // 예측 호출
+    //         PredictResponse response = predictionServiceClient.predict(predictRequest);
+
+    //         // 응답에서 예측 결과 추출
+    //         List<Value> predictions = response.getPredictionsList();
+    //         if (!predictions.isEmpty()) {
+    //             return predictions.get(0).getStringValue().trim();
+    //         } else {
+    //             return "No prediction available";
+    //         }
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //         throw new RuntimeException("Failed to call Google Gemini API", e);
+    //     }
+    // }
+
     private String callChatGPT(String prompt) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -73,7 +100,7 @@ public class AiPredictController {
         headers.setBearerAuth(API_KEY);
 
         Map<String, Object> body = new HashMap<>();
-        body.put("model", "gpt-3.5");  // 또는 "gpt-3.5-turbo"
+        body.put("model", "gpt-3.5-turbo");  // 또는 "gpt-3.5-turbo"
         body.put("messages", List.of(
             Map.of("role", "system", "content", "You are a number sequence predictor."),
             Map.of("role", "user", "content", prompt)

@@ -5,6 +5,13 @@ spring:
   application:
     name: ai-crawling-lotto  # 애플리케이션 이름 설정
 
+  ai:
+    vertex:
+      ai:
+        gemini:
+          project-id: lotto-predict-434204
+          location: asia-northeast3
+
 logging:
   level:
     '[org.springframework.web]': debug
