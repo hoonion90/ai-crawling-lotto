@@ -1,20 +1,22 @@
-## /admin/crawl-lotto-spot 
+## - 웹 크롤링
 
-> 1등 당첨지역 크롤링
+JSoup
 
-## /, /top-stores
+### [GET] /admin/crawl-lotto-spot 
+
+> 1등 당첨지역 크롤링, json 파일생성
+
+### [GET] /, /top-stores
 
 > 1등 당첨지역 검색, 조회
 
 ---
 
-ai 하려고 했는데..
-죄다 유로네...
+## - AI 프롬프트 api 호출 테스트
 
+Spring Ai + Google Vertex Ai Gemini
 
-## AI 프롬프트 api 호출 테스트
-
-Get: http://localhost:8070/api/chat
+### [GET] http://localhost:8070/api/chat
 
 ``` json
 {
@@ -26,7 +28,7 @@ Get: http://localhost:8070/api/chat
 curl --location --request GET 'http://localhost:8070/api/chat' \
 --header 'Content-Type: application/json' \
 --data '{
-    "message" : "Spring AI에 대해 알아?"
+    "message" : "너는 이름이 왜 잼민이야?"
 }'
 ```
 
